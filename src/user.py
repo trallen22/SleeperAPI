@@ -4,11 +4,15 @@ class User(BaseSleeperAPI):
     SPORT = "nfl"
     SEASON = "2025"
 
-    def __init__(self, username: str=None, user_id: str=None, display_name: str=None) -> None:
+    def __init__(self, username: str=None, user_id: str=None, display_name: str=None, roster_id: str=None) -> None:
+        if not (username or user_id):
+            raise ValueError("instance must set atleast username or user_id before running _apiGetUser()")
         self.username = username
         self.user_id = user_id
         self.display_name = display_name
         self.setBasicUserInfo()
+        self.roster_id = roster_id
+        self.matchup_by_week = None # this will need to refactor for different seasons
 
     def setBasicUserInfo(self) -> str:
         userInfo = self._apiGetUser()

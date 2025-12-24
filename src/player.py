@@ -14,6 +14,9 @@ class Player(BaseSleeperAPI):
     def __init__(self, playerId: str):
         self.setPlayerInfo(playerId)
 
+    def __str__(self):
+        return self.full_name
+
     def setPlayerInfo(self, playerId: str):
         try:
             curPlayer = playerInfoDict[str(playerId)]
