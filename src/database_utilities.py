@@ -7,6 +7,7 @@ DEFAULT_VALUE = "Null"
 # table names
 PLAYERS_TABLE = "players"
 LEAGUES_TABLE = "leagues"
+USERS_TABLE = "users"
 # test variables
 TEST_TABLE = "ticker_news"
 TEST_TICKER = "MSFT"

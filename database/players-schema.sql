@@ -1,6 +1,5 @@
 drop table if exists players;
 
-
 -- news_articles holds the information for the individual articles
 create table players (
     player_id       VARCHAR NOT NULL,

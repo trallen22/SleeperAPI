@@ -1,5 +1,5 @@
 import json
-from base_sleeper_api import BaseSleeperAPI
+import sleeper_api
 
 # path = "v1/players/nfl" # This is to get full player data; don't query more than once a day
 PLAYERS_INFO_FILE = "players.json"
@@ -10,7 +10,7 @@ except Exception as e:
     print(f"Error loading {PLAYERS_INFO_FILE}")
     print(f"ERROR:\n{e}")
 
-class Player(BaseSleeperAPI):
+class Player():
     def __init__(self, playerId: str):
         self.setPlayerInfo(playerId)
 

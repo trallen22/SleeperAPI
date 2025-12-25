@@ -1,8 +1,9 @@
 from operator import le
-from base_sleeper_api import BaseSleeperAPI
+from time import sleep
+import sleeper_api
 import database_utilities as db_utils
 
-class League(BaseSleeperAPI):
+class League():
     SPORT = "nfl"
     SEASON = "2025"
 
@@ -39,7 +40,7 @@ class League(BaseSleeperAPI):
 
     @classmethod
     def _apiGetSpecificLeagueById(cls, leagueId: str) -> dict:
-        return super().callApi(f"v1/league/{leagueId}")
+        return sleeper_api.callApi(f"v1/league/{leagueId}")
 
     # instance methods
     def getCurRosters(self) -> list[dict]:
@@ -59,13 +60,13 @@ class League(BaseSleeperAPI):
 
     # private instance methods
     def _apiGetCurRostersByLeagueId(self) -> list[dict]:
-        return super().callApi(f"v1/league/{self.league_id}/rosters")
+        return sleeper_api.callApi(f"v1/league/{self.league_id}/rosters")
 
     def _apiGetUsersByLeagueId(self) -> list[dict]:
-        return super().callApi(f"v1/league/{self.league_id}/users")
+        return sleeper_api.callApi(f"v1/league/{self.league_id}/users")
 
     def _apiGetMatchupsByWeekByLeagueId(self, week: int) -> list[dict]:
-        return super().callApi(f"v1/league/{self.league_id}/matchups/{week}")
+        return sleeper_api.callApi(f"v1/league/{self.league_id}/matchups/{week}")
 
     @staticmethod
     def convertLeagueObjToTuble(leagueObj) -> tuple:
