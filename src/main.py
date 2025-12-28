@@ -1,7 +1,7 @@
 import json
-from league import League
-from player import Player
-from user import User
+from models.league import League
+from models.player import Player
+from models.user import User
 
 USERNAME = "tallen21"
 USER_ID = "839972291348639744"

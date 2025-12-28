@@ -16,7 +16,7 @@ TEST_DATE = "2025-06-06"
 TEST_INSERT = (TEST_TICKER, f'{TEST_RELATED}', TEST_DATE)
 TEST_SELECT_COLS = [ "ticker_symbol", "related_tickers" ]
 # debug flag
-DB_UTILS_DEBUG = 0
+DB_UTILS_DEBUG = 1
 
 # we'll try to open a connection 
 try: 
