@@ -4,6 +4,8 @@ import database_utilities as db_utils
 class League():
     SPORT = "nfl"
     SEASON = "2025"
+    NUM_STARTERS = 10
+    NUM_BENCH = 25
 
     def __init__(self, leagueInfoDict: dict=None, leagueInfoTuple: tuple=None):
         # TODO: should probably move the different logic to separate class methods
@@ -76,8 +78,33 @@ class League():
 
     def getMatchupsByWeek(self, week: int) -> list[dict]:
         if self.matchups_by_week.get(week) is None:
-            self.matchups_by_week[week] = self._apiGetMatchupsByWeekByLeagueId(week)
-        return self.matchups_by_week[week]
+            self.matchups_by_week = self._apiGetMatchupsByWeekByLeagueId(week)
+        return self.matchups_by_week
+
+    def insertRostersToDBbyWeek(self, week: int) -> int:
+        if not self.matchups_by_week:
+            self.getMatchupsByWeek(week)
+        for m in self.matchups_by_week:
+            # print(m)
+            # print(f"MATCHUP ID: {m['matchup_id']}")
+            # print(f"ROSTER ID: {m['roster_id']}")
+            bench = [player for player in m["players"] if player not in m["starters"]]
+            # print(f"STARTERS: {m['starters']}")
+            # print(f"BENCH: {bench}")
+            starters = m["starters"]
+            # Should already be 10 starters but just in case; to align with schema
+            starters.extend([None] * (len(starters) - self.NUM_STARTERS))
+            # print(starters)
+            # make sure starters are first
+            curLineup = starters + bench
+            pointsList = []
+            for p in curLineup:
+                pointsList.append(p)
+                pointsList.append(m["players_points"][p])
+            # print(pointsList)
+            pointsList.extend([None] * (len(starters) - ))
+            print(len(pointsList))
+            # db_utils.sqlInsert(db_utils.ROSTERS_TABLE, )
 
     # private instance methods
     def _apiGetCurRostersByLeagueId(self) -> list[dict]:
@@ -120,5 +147,6 @@ if __name__ == "__main__":
     LEAGUE_ID = "1259602742452690944"
     
     testLeague = League.getSpecificLeagueById(LEAGUE_ID)
-    for m in testLeague.getMatchupsByWeek(1):
-        print(m)
+    # for m in testLeague.getMatchupsByWeek(1):
+        # print(m)
+    testLeague.insertRostersToDBbyWeek(1)

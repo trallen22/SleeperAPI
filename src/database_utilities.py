@@ -8,13 +8,14 @@ DEFAULT_VALUE = "Null"
 PLAYERS_TABLE = "players"
 LEAGUES_TABLE = "leagues"
 USERS_TABLE = "users"
+ROSTERS_TABLE = "rosters"
+# rosters variables
+STARTERS_DB_HEADER = "starter_{}"
+STARTERS_POINTS_DB_HEADER = "starter_{}_points"
+BENCH_DB_HEADER = "bench_{}"
+BENCH_POINTS_DB_HEADER = "bench_{}_points"
 # test variables
-TEST_TABLE = "ticker_news"
-TEST_TICKER = "MSFT"
-TEST_RELATED = [ "AMZN", "NVDA", "DIS" ]
-TEST_DATE = "2025-06-06"
-TEST_INSERT = (TEST_TICKER, f'{TEST_RELATED}', TEST_DATE)
-TEST_SELECT_COLS = [ "ticker_symbol", "related_tickers" ]
+
 # debug flag
 DB_UTILS_DEBUG = 1
 
