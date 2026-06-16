@@ -2,11 +2,12 @@ import sqlite3
 
 # database connection variables
 # TODO: need a way to not have to comment this
-DATABASE = "../sleeper_fantasy.db"
+DATABASE = "sleeper_fantasy.db" # this should be relative to the top level
 DEFAULT_VALUE = "Null"
 # table names
 PLAYERS_TABLE = "players"
 LEAGUES_TABLE = "leagues"
+LEAGUE_ROSTERS_TABLE = "league_rosters"
 USERS_TABLE = "users"
 ROSTERS_TABLE = "rosters"
 # rosters variables
@@ -71,8 +72,8 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
         table - str, name of table to select values from \\
         select - list, column names to select from \\
         join - list, list of join statements \\
-        where - dict, \\
-    returns: a list of tuples replresenting the query results
+        where - dict, key=value\\
+    returns: a list of tuples representing the query results
     """
     curCursor = connection.cursor()
     # setup SELECT str

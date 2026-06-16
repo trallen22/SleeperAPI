@@ -1,5 +1,5 @@
-import sleeper_api
-import database_utilities as db_utils
+from .. import sleeper_api
+from .. import database_utilities as db_utils
 
 class League():
     SPORT = "nfl"
@@ -43,7 +43,7 @@ class League():
             self.scoring_settings = leagueInfoTuple[12]
             self.settings = leagueInfoTuple[13]
             self.avatar = leagueInfoTuple[14]
-            self.current_rosters = [15]
+            self.current_rosters = leagueInfoTuple[15]
         else:
             raise ValueError("Must pass either leagueInfoDict or leagueInfoTuple")
 
@@ -102,7 +102,7 @@ class League():
                 pointsList.append(p)
                 pointsList.append(m["players_points"][p])
             # print(pointsList)
-            pointsList.extend([None] * (len(starters) - ))
+            pointsList.extend([None] * (len(starters) - 1))
             print(len(pointsList))
             # db_utils.sqlInsert(db_utils.ROSTERS_TABLE, )
 
@@ -147,6 +147,6 @@ if __name__ == "__main__":
     LEAGUE_ID = "1259602742452690944"
     
     testLeague = League.getSpecificLeagueById(LEAGUE_ID)
-    # for m in testLeague.getMatchupsByWeek(1):
-        # print(m)
+    for m in testLeague.getMatchupsByWeek(1):
+        print(m)
     testLeague.insertRostersToDBbyWeek(1)

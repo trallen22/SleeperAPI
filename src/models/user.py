@@ -1,4 +1,4 @@
-import sleeper_api 
+from .. import sleeper_api 
 
 class User():
     SPORT = "nfl"
