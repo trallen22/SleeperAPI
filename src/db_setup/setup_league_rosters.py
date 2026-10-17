@@ -4,7 +4,7 @@ This file is for setting up the "league_rosters" table for the database
 
 from ..models import league
 from .. import config
-from .. import database_utilities as db_utils
+from ..utils import database_utilities as db_utils
 
 def insert_league_rosters(league_id: int | str=None):
     """

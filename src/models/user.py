@@ -1,4 +1,4 @@
-from .. import sleeper_api 
+import sleeper_api 
 
 class User():
     SPORT = "nfl"
@@ -30,10 +30,10 @@ class User():
             identifier = self.username
         elif self.user_id:
             identifier = self.user_id
-        return sleeper_api.callApi(f"v1/user/{identifier}")
+        return sleeper_api._callApi(f"v1/user/{identifier}")
 
     def _apiGetAllLeaguesForUserId(self) -> list[dict]:
-        return sleeper_api.callApi(f"v1/user/{self.user_id}/leagues/{self.SPORT}/{self.SEASON}") 
+        return sleeper_api._callApi(f"v1/user/{self.user_id}/leagues/{self.SPORT}/{self.SEASON}") 
 
 if __name__ == "__main__":
     USERNAME = "tallen21"

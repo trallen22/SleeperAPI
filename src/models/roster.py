@@ -1,5 +1,5 @@
 from league import League
-import database_utilities as db_utils
+from ..utils import database_utilities as db_utils
 
 class Roster():
     def __init__(self, roster_id: str, league_id: str, week: str, starters: list=None, bench: list=None):

@@ -5,7 +5,7 @@ This file is for setting up the "users" table for the database
 from ..models import league
 from ..models import user
 from .. import config
-from .. import database_utilities as db_utils
+from ..utils import database_utilities as db_utils
 
 def insert_users(league_id: int | str=None):
     """
