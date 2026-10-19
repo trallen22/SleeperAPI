@@ -1,5 +1,5 @@
-import sleeper_api
-from ..utils import database_utilities as db_utils
+from src.models import sleeper_api
+from src.utils import database_utilities as db_utils
 
 class League():
     SPORT = "nfl"
@@ -54,7 +54,7 @@ class League():
         # league = League(cls._apiGetSpecificLeagueById(leagueId))
         if len(leagueSQLquery) == 0: # we didn't find it in the db
             league = League(leagueInfoDict=cls._apiGetSpecificLeagueById(leagueId))
-            if db_utils.sqlInsert(db_utils.LEAGUES_TABLE, League.convertLeagueObjToTuble(league)):
+            if db_utils.sqlInsert(db_utils.LEAGUES_TABLE, League.convertLeagueObjToTuple(league)):
                 print(f"failed to insert league {leagueId} into {db_utils.LEAGUES_TABLE}")
         else:
             print("found in db!")
@@ -117,7 +117,7 @@ class League():
         return sleeper_api._callApi(f"v1/league/{self.league_id}/matchups/{week}")
 
     @staticmethod
-    def convertLeagueObjToTuble(leagueObj) -> tuple:
+    def convertLeagueObjToTuple(leagueObj) -> tuple:
         # NOTE: make sure this lines up with schema !!
         leagueTuple = (
             leagueObj.league_id,

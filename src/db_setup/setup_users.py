@@ -2,10 +2,10 @@
 This file is for setting up the "users" table for the database
 """
 
-from ..models import league
-from ..models import user
-from .. import config
-from ..utils import database_utilities as db_utils
+from src.models import league
+from src.models import user
+from src import config
+from src.utils import database_utilities as db_utils
 
 def insert_users(league_id: int | str=None):
     """

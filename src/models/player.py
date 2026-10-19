@@ -1,8 +1,11 @@
 import json
-import sleeper_api
+from src.models import sleeper_api
+from pathlib import Path
 
 # path = "v1/players/nfl" # This is to get full player data; don't query more than once a day
-PLAYERS_INFO_FILE = "players.json"
+BASE_DIR = Path(__file__).resolve().parent
+PLAYERS_INFO_FILE = f"{BASE_DIR}/players.json"
+playerInfoDict = None
 try:
     with open(PLAYERS_INFO_FILE, 'r') as playerInfoFile:
         playerInfoDict = json.load(playerInfoFile)
