@@ -1,8 +1,8 @@
-from src.models import sleeper_api
+from src.models.sleeper_api import SleeperApi
 
 class User():
-    SPORT = "nfl"
-    SEASON = "2025"
+    # SPORT = "nfl"
+    # SEASON = "2025"
 
     def __init__(self, username: str=None, user_id: str=None, display_name: str=None, roster_id: str=None) -> None:
         if not (username or user_id):
@@ -15,25 +15,30 @@ class User():
         self.matchup_by_week = None # this will need to refactor for different seasons
 
     def setBasicUserInfo(self) -> str:
-        userInfo = self._apiGetUser()
-        self.username = userInfo.get("username")
-        self.user_id = userInfo.get("user_id")
-        self.display_name = userInfo.get("display_name")
-
-    def getAllLeaguesForUserId(self) -> list:
-        listLeagues = self._apiGetAllLeaguesForUserId()
-        return listLeagues
-
-    def _apiGetUser(self) -> dict:
         identifier = ""
         if self.username:
             identifier = self.username
         elif self.user_id:
             identifier = self.user_id
-        return sleeper_api._callApi(f"v1/user/{identifier}")
+        userInfo = SleeperApi.apiGetUser(identifier)
+        self.username = userInfo.get("username")
+        self.user_id = userInfo.get("user_id")
+        self.display_name = userInfo.get("display_name")
 
-    def _apiGetAllLeaguesForUserId(self) -> list[dict]:
-        return sleeper_api._callApi(f"v1/user/{self.user_id}/leagues/{self.SPORT}/{self.SEASON}") 
+    def getAllLeaguesForUserId(self, season=SleeperApi.SEASON, sport=SleeperApi.SPORT) -> list:
+        listLeagues = SleeperApi.apiGetAllLeaguesForUserId(userId=self.user_id, season=season, sport=sport)
+        return listLeagues
+
+    # def _apiGetUser(self) -> dict:
+    #     identifier = ""
+    #     if self.username:
+    #         identifier = self.username
+    #     elif self.user_id:
+    #         identifier = self.user_id
+    #     return sleeper_api._callApi(f"v1/user/{identifier}")
+
+    # def _apiGetAllLeaguesForUserId(self) -> list[dict]:
+    #     return sleeper_api._callApi(f"v1/user/{self.user_id}/leagues/{self.SPORT}/{self.SEASON}") 
 
 if __name__ == "__main__":
     USERNAME = "tallen21"
