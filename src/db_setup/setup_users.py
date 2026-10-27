@@ -34,4 +34,4 @@ def insert_users(league_id: int | str=None):
     return 0
 
 if __name__ == "__main__":
-    insert_users(config.SMACKERS_LEAGUE_ID)
+    insert_users(config.SMACKERS_LEAGUE_ID_2026)

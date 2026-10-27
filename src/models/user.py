@@ -1,9 +1,6 @@
 from src.models.sleeper_api import SleeperApi
 
 class User():
-    # SPORT = "nfl"
-    # SEASON = "2025"
-
     def __init__(self, username: str=None, user_id: str=None, display_name: str=None, roster_id: str=None) -> None:
         if not (username or user_id):
             raise ValueError("instance must set atleast username or user_id before running _apiGetUser()")

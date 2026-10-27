@@ -18,14 +18,14 @@ class Player():
         self.setPlayerInfo(playerId)
 
     def __str__(self):
-        return self.full_name
+        return str(self.full_name)
 
     def setPlayerInfo(self, playerId: str):
         try:
             curPlayer = playerInfoDict[str(playerId)]
         except KeyError:
             print(f"ERROR unable to find player with id: '{playerId}' in '{PLAYERS_INFO_FILE}'")
-            return
+            curPlayer = dict()
         self.fantasy_positions = curPlayer.get("fantasy_positions")
         self.last_name = curPlayer.get("last_name")
         self.first_name = curPlayer.get("first_name")

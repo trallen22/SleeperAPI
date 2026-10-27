@@ -1,6 +1,6 @@
 drop table if exists league_rosters;
 
--- holds the mapping for user to roster for a league
+-- holds the mapping for user_id -> roster_id for a league
 CREATE TABLE league_rosters (
     league_id TEXT NOT NULL,
     roster_id INTEGER NOT NULL,

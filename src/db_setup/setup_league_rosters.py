@@ -23,4 +23,4 @@ def insert_league_rosters(league_id: int | str=None):
     return 0
 
 if __name__ == "__main__":
-    insert_league_rosters(config.SMACKERS_LEAGUE_ID)
+    insert_league_rosters(config.SMACKERS_LEAGUE_ID_2026)

@@ -2,8 +2,6 @@ from src.models.sleeper_api import SleeperApi
 from src.utils import database_utilities as db_utils
 
 class League():
-    SPORT = "nfl"
-    SEASON = "2025"
     NUM_STARTERS = 10
     NUM_BENCH = 25
 
@@ -51,9 +49,7 @@ class League():
     @classmethod
     def getSpecificLeagueById(cls, leagueId: str) -> "League":
         leagueSQLquery = db_utils.sqlSelect(db_utils.LEAGUES_TABLE, where={ "league_id": leagueId })
-        # league = League(cls._apiGetSpecificLeagueById(leagueId))
         if len(leagueSQLquery) == 0: # we didn't find it in the db
-            # league = League(leagueInfoDict=cls._apiGetSpecificLeagueById(leagueId))
             league = League(leagueInfoDict=SleeperApi.apiGetSpecificLeagueById(leagueId))
             if db_utils.sqlInsert(db_utils.LEAGUES_TABLE, League.convertLeagueObjToTuple(league)):
                 print(f"failed to insert league {leagueId} into {db_utils.LEAGUES_TABLE}")
@@ -62,26 +58,19 @@ class League():
             league = League(leagueInfoTuple=leagueSQLquery[0])
         return league
 
-    # @classmethod
-    # def _apiGetSpecificLeagueById(cls, leagueId: str) -> dict:
-    #     return sleeper_api._callApi(f"v1/league/{leagueId}")
-
     # instance methods
     def getCurRosters(self) -> list[dict]:
         if self.current_rosters is None:
-            # self.current_rosters = self._apiGetCurRostersByLeagueId()
             self.current_rosters = SleeperApi.apiGetCurRostersByLeagueId(self.league_id)
         return self.current_rosters
 
     def getUsers(self) -> list[dict]:
         if self.league_users is None:
-            # self.league_users = self._apiGetUsersByLeagueId()
             self.league_users = SleeperApi.apiGetUsersByLeagueId(self.league_id)
         return self.league_users
 
     def getMatchupsByWeek(self, week: int) -> list[dict]:
         if self.matchups_by_week.get(week) is None:
-            # self.matchups_by_week = self._apiGetMatchupsByWeekByLeagueId(week)
             self.matchups_by_week = SleeperApi.apiGetMatchupsByWeekByLeagueId(self.league_id, week)
         return self.matchups_by_week
 
@@ -109,16 +98,6 @@ class League():
             pointsList.extend([None] * (len(starters) - 1))
             print(len(pointsList))
             # db_utils.sqlInsert(db_utils.ROSTERS_TABLE, )
-
-    # # private instance methods
-    # def _apiGetCurRostersByLeagueId(self) -> list[dict]:
-    #     return sleeper_api._callApi(f"v1/league/{self.league_id}/rosters")
-
-    # def _apiGetUsersByLeagueId(self) -> list[dict]:
-    #     return sleeper_api._callApi(f"v1/league/{self.league_id}/users")
-
-    # def _apiGetMatchupsByWeekByLeagueId(self, week: int) -> list[dict]:
-    #     return sleeper_api._callApi(f"v1/league/{self.league_id}/matchups/{week}")
 
     @staticmethod
     def convertLeagueObjToTuple(leagueObj) -> tuple:

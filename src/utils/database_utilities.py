@@ -10,6 +10,8 @@ LEAGUES_TABLE = "leagues"
 LEAGUE_ROSTERS_TABLE = "league_rosters"
 USERS_TABLE = "users"
 ROSTERS_TABLE = "rosters"
+MATCHUPS_TABLE = "matchups"
+PLAYERS_POINTS_TABLE = "players_points"
 # rosters variables
 STARTERS_DB_HEADER = "starter_{}"
 STARTERS_POINTS_DB_HEADER = "starter_{}_points"
@@ -54,6 +56,7 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         tupleStr += ")"
         sqlStr = f"INSERT INTO {table} VALUES {tupleStr};"
         DB_UTILS_DEBUG and print(f"insert statement: {sqlStr}")
+        DB_UTILS_DEBUG and print(f"insert values: {curTuple}")
         curCursor.execute(sqlStr, curTuple)
         connection.commit()
     except Exception as e:
@@ -94,7 +97,8 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
     if where:
         whereStr = " WHERE "
         for key in list(where.keys()):
-            whereStr += f"{key}='{where[key]}'"
+            whereStr += f"{key}='{where[key]}' AND "
+        whereStr = whereStr[:-5] # remove ' AND ' from where
     # running the sql statement
     sqlStr = f"SELECT {columnStr} FROM {table}{joinStr}{whereStr};"
     DB_UTILS_DEBUG and print(f"sql statement: {sqlStr}")
