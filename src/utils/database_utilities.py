@@ -23,12 +23,13 @@ BENCH_POINTS_DB_HEADER = "bench_{}_points"
 DB_UTILS_DEBUG = 1
 
 # we'll try to open a connection 
-try: 
-    connection = sqlite3.connect(DATABASE) 
-except Exception as e:
-    print(f"ERROR: failed to connect to database")
-    print(f'error: {e}')
-    exit(1)
+def getSqliteConnection():
+    try: 
+        return sqlite3.connect(DATABASE) 
+    except Exception as e:
+        print(f"ERROR: failed to connect to database")
+        print(f'error: {e}')
+        exit(1)
 
 def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
     """
@@ -41,9 +42,10 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         1 - connection failed \\
         2 - execution failed
     """
-    curCursor = connection.cursor()
+    connection = getSqliteConnection()
     # actually inserting into the table
     try:
+        curCursor = connection.cursor()
         # we build the insert tuple as a string so we can use DEFAULT for Postgres SERIAL types
         tupleStr = "("
         for i in range(len(curTuple)):
@@ -64,8 +66,9 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         print(f"failed insert '{tupleStr}' into '{table}'")
         print(f"ERROR: {e}")
         return 2
-    # cleanup
-    curCursor.close()
+    finally:
+        # cleanup
+        curCursor.close()
     return 0
 
 def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: dict=None) -> list[tuple]:
@@ -78,6 +81,7 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
         where - dict, key=value\\
     returns: a list of tuples representing the query results
     """
+    connection = getSqliteConnection()
     curCursor = connection.cursor()
     # setup SELECT str
     columnStr = ""
@@ -126,6 +130,7 @@ def sqlDelete(table: str, where: dict=None) -> int:
         0 - success \\
         1 - failed to execute sql command
     """
+    connection = getSqliteConnection()
     curCursor = connection.cursor()
     # setup WHERE string
     whereStr = ""
