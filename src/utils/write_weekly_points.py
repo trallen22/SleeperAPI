@@ -9,7 +9,7 @@ import pprint
 
 
 # curWeek = config.CUR_WEEK
-curWeek = 6
+curWeek = 7
 curLeague = config.SMACKERS_LEAGUE_ID_2026
 
 smackers_league = League.getSpecificLeagueById(curLeague)

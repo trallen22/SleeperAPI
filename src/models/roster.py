@@ -31,7 +31,7 @@ class Roster():
                 if curTaxi is None:
                     curTaxi = []
                 curBench = [p for p in nonStarters if p not in set(curTaxi)]
-                return Roster(roster_id=roster_id, league_id=r['league_id'], week=99, starters=curStarters, bench=curBench, taxi=r.get('taxi'), reserve=r.get('reserve'))
+                return Roster(roster_id=roster_id, league_id=r['league_id'], week=99, starters=curStarters, bench=curBench, taxi=curTaxi, reserve=r.get('reserve'))
 
 if __name__ == "__main__":
     TEST_WEEK = 1
