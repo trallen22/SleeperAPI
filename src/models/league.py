@@ -1,5 +1,6 @@
 from src.models.sleeper_api import SleeperApi
 from src.utils import database_utilities as db_utils
+from src import config
 
 class League():
     NUM_STARTERS = 10
@@ -71,8 +72,14 @@ class League():
 
     def getMatchupsByWeek(self, week: int) -> list[dict]:
         if self.matchups_by_week.get(week) is None:
-            self.matchups_by_week = SleeperApi.apiGetMatchupsByWeekByLeagueId(self.league_id, week)
-        return self.matchups_by_week
+            # TODO: Nood to make sure the matchup format stays consistent
+            matchupsSQLquery = db_utils.sqlSelect(db_utils.MATCHUPS_TABLE, where={ "league_id": self.league_id, "week": week }, output="dict")
+            if len(matchupsSQLquery) == 0: # we didn't find any in the db
+                print(f"Couldn't find matchups for league '{self.league_id}' week '{week}' into table {db_utils.MATCHUPS_TABLE}")
+            else:
+                print(f"found matchups for league '{self.league_id}' week '{week}' in db!")
+                self.matchups_by_week[week] = matchupsSQLquery
+        return self.matchups_by_week.get(week)
 
     def insertRostersToDBbyWeek(self, week: int) -> int:
         if not self.matchups_by_week:
@@ -127,9 +134,11 @@ if __name__ == "__main__":
 
     USERNAME = "tallen21"
     USER_ID = "839972291348639744"
-    LEAGUE_ID = "1259602742452690944"
+    LEAGUE_ID = config.SMACKERS_LEAGUE_ID_2026
+    TEST_WEEK = 7
     
     testLeague = League.getSpecificLeagueById(LEAGUE_ID)
-    for m in testLeague.getMatchupsByWeek(1):
-        print(m)
-    testLeague.insertRostersToDBbyWeek(1)
+    print(f"all: {testLeague.getMatchupsByWeek(TEST_WEEK)}")
+    # for m in testLeague.getMatchupsByWeek(TEST_WEEK):
+    #     print(m)
+    # testLeague.insertRostersToDBbyWeek(1)

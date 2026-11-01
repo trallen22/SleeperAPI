@@ -1,5 +1,4 @@
 import json
-from src.models import sleeper_api
 from pathlib import Path
 
 # path = "v1/players/nfl" # This is to get full player data; don't query more than once a day
@@ -36,6 +35,13 @@ class Player():
         self.position = curPlayer.get("position")
         self.team = curPlayer.get("team")
         self.team_abbr = curPlayer.get("team_abbr")
+
+    @classmethod
+    def convertListOfIDs(cls, playerIds: str | list[int]):
+        # make sure we have a list
+        if isinstance(playerIds, str):
+            playerIds = eval(playerIds)
+        return [cls(pId) for pId in playerIds]
 
 if __name__ == "__main__":
     testPlayer = Player(3992)

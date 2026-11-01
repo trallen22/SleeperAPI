@@ -6,7 +6,7 @@ from src.models.user import User
 from src import config
 import pprint
 
-TEST_WEEK = 5
+TEST_WEEK = 7
 
 smackers_league = League.getSpecificLeagueById(config.SMACKERS_LEAGUE_ID_2026)
 # for u in smackers_league.getUsers():
@@ -24,6 +24,9 @@ print(f"starters: {specRoster.starters}")
 print(f"bench: {specRoster.bench}")
 print(f"taxi: {specRoster.taxi_squad}")
 print(type(specRoster.starters))
+players = Player.convertListOfIDs(specRoster.starters)
+for p in players:
+    print(p.full_name)
 
 # for p in specRoster.taxi_squad:
 #     curPlayer = Player(p)
@@ -32,32 +35,32 @@ print(type(specRoster.starters))
 #     print(f"player last name: {curPlayer.last_name}")
 
 
-# dictRosterIdtoUserId = {} # looks like { <roster_id>: User() }
-# for r in listRosters:
-#     dictRosterIdtoUserId[r["roster_id"]] = User(user_id=r["owner_id"], roster_id=r["roster_id"])
+dictRosterIdtoUserId = {} # looks like { <roster_id>: User() }
+for r in listRosters:
+    dictRosterIdtoUserId[r["roster_id"]] = User(user_id=r["owner_id"], roster_id=r["roster_id"])
 
-# for matchup in smackers_league.getMatchupsByWeek(TEST_WEEK):
-    # print(f"MATCHUP: \n{pprint.pprint(matchup)}")
-    # curUser = dictRosterIdtoUserId[matchup["roster_id"]]
-    # curRoster = Roster.getCurRosterFromLeague(matchup["roster_id"], listRosters)
-    # # pprint.pprint(matchup)
-    # print(f"current user: {curUser.username}")
-    # print(f"week {TEST_WEEK} score: {matchup['points']}")
-    # # separate starters and bench
-    # curStarters = matchup["starters"]
-    # curBench = [p for p in matchup["players"] if p not in (set(curStarters) | set(curRoster.taxi_squad))]
+for matchup in smackers_league.getMatchupsByWeek(TEST_WEEK):
+    print(f"MATCHUP: \n{pprint.pprint(matchup)}")
+    curUser = dictRosterIdtoUserId[matchup["roster_id"]]
+    curRoster = Roster.getCurRosterFromLeague(matchup["roster_id"], listRosters)
+    # pprint.pprint(matchup)
+    print(f"current user: {curUser.username}")
+    print(f"week {TEST_WEEK} score: {matchup['points']}")
+    # separate starters and bench
+    curStarters = matchup["starters"]
+    curBench = [p for p in matchup["players"] if p not in (set(curStarters) | set(curRoster.taxi_squad))]
 
-    # print("starters:")
-    # for scorer in curStarters:
-    #     curScorer = Player(scorer)
-    #     print(f"\t{curScorer} \t{matchup['players_points'][scorer]}")
-    # print("bench:")
-    # for benchScorer in curBench:
-    #     curScorer = Player(benchScorer)
-    #     print(f"\t{curScorer} \t{matchup['players_points'][benchScorer]}")
-    # print("taxi:")
-    # for curTaxi in curRoster.taxi_squad:
-    #     curScorer = Player(curTaxi)
-    #     print(f"\t{curScorer} \t{matchup['players_points'][curTaxi]}")
-    # print()
-
+    print("starters:")
+    for scorer in curStarters:
+        curScorer = Player(scorer)
+        print(f"\t{curScorer} \t{matchup['players_points'][scorer]}")
+    print("bench:")
+    for benchScorer in curBench:
+        curScorer = Player(benchScorer)
+        print(f"\t{curScorer} \t{matchup['players_points'][benchScorer]}")
+    print("taxi:")
+    for curTaxi in curRoster.taxi_squad:
+        curScorer = Player(curTaxi)
+        print(f"\t{curScorer} \t{matchup['players_points'][curTaxi]}")
+    print()
+    break

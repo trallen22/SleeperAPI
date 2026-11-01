@@ -1,12 +1,8 @@
 from src.models.league import League
-from src.models.player import Player
 from src.models.roster import Roster
-from src.models.user import User
 from src import config
 import src.utils.database_utilities as db_utils
 import pprint
-import json
-from pathlib import Path
 
 curWeek = config.CUR_WEEK
 cur_league_id = config.SMACKERS_LEAGUE_ID_2026
@@ -40,6 +36,7 @@ for matchup in smackers_league.getMatchupsByWeek(curWeek):
     print(f"{curRoster.taxi_squad}")
     print()
 
+    # Make sure this lines up with the matchups table schema
     exitCode = db_utils.sqlInsert(
         table=db_utils.MATCHUPS_TABLE,
         curTuple=(

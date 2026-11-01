@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from src.models.league import League
+from src.models.player import Player
 from src.models.roster import Roster
 
 app = FastAPI()
@@ -25,6 +26,23 @@ async def get_matchup_info(league_id: int, week: int=7, matchup_id: int=1):
     return {
         "roster_1": curMatchup[0]['roster_id'],
         "roster_2": curMatchup[1]['roster_id']
+    }
+
+@app.get("/api/{league_id}/matchups/{roster_id}")
+async def get_matchup_roster(league_id: int, week: int, roster_id: int):
+    print(f"week: {week}\t roster_id: {roster_id}")
+    leagueMatchups = League.getSpecificLeagueById(leagueId=league_id).getMatchupsByWeek(week)
+    curMatchup = None
+    for m in leagueMatchups:
+        if (m['roster_id'] == roster_id):
+            curMatchup = m
+            break
+    
+    players = Player.convertListOfIDs(curMatchup.get("starters"))
+    for p in players:
+        print(p.full_name)
+    return {
+        "starters": [p.full_name for p in players]
     }
 
 @app.get("/api/{league_id}/roster")

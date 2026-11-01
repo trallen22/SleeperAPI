@@ -71,7 +71,7 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         curCursor.close()
     return 0
 
-def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: dict=None) -> list[tuple]:
+def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: dict=None, output: str=None) -> list[tuple]:
     """
     sqlSelect: executes a SQL select statement on a given table \\
     parameters: \\
@@ -82,6 +82,10 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
     returns: a list of tuples representing the query results
     """
     connection = getSqliteConnection()
+    # check what format for output
+    # TODO: could probably improve this logic
+    if output == "dict":
+        connection.row_factory = sqlite3.Row
     curCursor = connection.cursor()
     # setup SELECT str
     columnStr = ""
@@ -110,7 +114,10 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
         curCursor.execute(sqlStr)
         connection.commit()
         # fetching the results
-        queryResults = curCursor.fetchall()
+        if output == "dict":
+            queryResults = [dict(row) for row in curCursor.fetchall()]
+        else:
+            queryResults = curCursor.fetchall()
     except Exception as e:
         connection.rollback()
         print(f"failed table: {table}")

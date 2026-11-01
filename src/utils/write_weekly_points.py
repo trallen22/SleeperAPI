@@ -1,12 +1,6 @@
-import json
 from src.models.league import League
-from src.models.player import Player
-from src.models.roster import Roster
-from src.models.user import User
 from src import config
 import src.utils.database_utilities as db_utils
-import pprint
-
 
 # curWeek = config.CUR_WEEK
 curWeek = 7
