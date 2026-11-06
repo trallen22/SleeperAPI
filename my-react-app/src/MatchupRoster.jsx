@@ -1,13 +1,26 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
+function RosterScorecard({ title, players }) {
+  return (
+    <>
+      <h1>{title}:</h1>
+      <ul>
+        {players.map(([player, points], index) => (
+            <li key={index}>{player} {points}</li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
 function MatchupRoster() {
   const { league_id, roster_id } = useParams();
   const [searchParams] = useSearchParams();
 
   const week = searchParams.get("week") ?? "7";
 
-  const [league, setLeague] = useState(null);
+  const [matchup_roster, setMatchupRoster] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,7 +29,7 @@ function MatchupRoster() {
 
     setLoading(true);
     setError(null);
-    setLeague(null);
+    setMatchupRoster(null);
 
     const params = new URLSearchParams({
       week,
@@ -32,7 +45,7 @@ function MatchupRoster() {
         }
         return res.json();
       })
-      .then((data) => setLeague(data))
+      .then((data) => setMatchupRoster(data))
       .catch((err) => {
         if (err.name !== "AbortError") {
           setError(err.message);
@@ -49,11 +62,13 @@ function MatchupRoster() {
 
   if (loading) return <p>Loading league...</p>;
   if (error) return <p>Error: {error}</p>;
-  if (!league) return <p>No matchup found.</p>;
+  if (!matchup_roster) return <p>No matchup roster found.</p>;
 
   return (
     <main>
-      <h1>Starters: {league.starters}</h1>
+      <RosterScorecard title="Starters" players={matchup_roster.starters} />
+      <RosterScorecard title="Bench" players={matchup_roster.bench} />
+      <RosterScorecard title="Taxi" players={matchup_roster.taxi} />
     </main>
   );
 }

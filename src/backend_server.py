@@ -19,9 +19,10 @@ async def get_league_info(league_id: int):
 async def get_matchup_info(league_id: int, week: int=7, matchup_id: int=1):
     print(f"week: {week}\t matchup_id: {matchup_id}")
     leagueMatchups = League.getSpecificLeagueById(leagueId=league_id).getMatchupsByWeek(week)
+    print(f"\n\n{leagueMatchups}\n\n")
     curMatchup = []
     for m in leagueMatchups:
-        if m['matchup_id'] == matchup_id:
+        if int(m['matchup_id']) == matchup_id:
             curMatchup.append(m)
     return {
         "roster_1": curMatchup[0]['roster_id'],
@@ -34,15 +35,28 @@ async def get_matchup_roster(league_id: int, week: int, roster_id: int):
     leagueMatchups = League.getSpecificLeagueById(leagueId=league_id).getMatchupsByWeek(week)
     curMatchup = None
     for m in leagueMatchups:
-        if (m['roster_id'] == roster_id):
+        if (int(m['roster_id']) == roster_id):
             curMatchup = m
             break
-    
+
+    # TODO: could probably improve this logic
     players = Player.convertListOfIDs(curMatchup.get("starters"))
     for p in players:
         print(p.full_name)
+        p.getPointsByWeek(league_id=league_id, week=week)
+    bench_players = Player.convertListOfIDs(curMatchup.get("bench"))
+    for b in bench_players:
+        print(b.full_name)
+        b.getPointsByWeek(league_id=league_id, week=week)
+    taxi_players = Player.convertListOfIDs(curMatchup.get("taxi"))
+    for t in taxi_players:
+        print(t.full_name)
+        t.getPointsByWeek(league_id=league_id, week=week)
+
     return {
-        "starters": [p.full_name for p in players]
+        "starters": [(p.full_name, p.weekly_points.get(f"{week}")) for p in players],
+        "bench": [(b.full_name, b.weekly_points.get(f"{week}")) for b in bench_players],
+        "taxi": [(t.full_name, t.weekly_points.get(f"{week}")) for t in taxi_players]
     }
 
 @app.get("/api/{league_id}/roster")

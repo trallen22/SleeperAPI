@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+from src import config
+import src.utils.database_utilities as db_utils
 
 # path = "v1/players/nfl" # This is to get full player data; don't query more than once a day
 BASE_DIR = Path(__file__).resolve().parent
@@ -15,6 +17,7 @@ except Exception as e:
 class Player():
     def __init__(self, playerId: str):
         self.setPlayerInfo(playerId)
+        self.weekly_points = {}
 
     def __str__(self):
         return str(self.full_name)
@@ -36,6 +39,15 @@ class Player():
         self.team = curPlayer.get("team")
         self.team_abbr = curPlayer.get("team_abbr")
 
+    def getPointsByWeek(self, league_id: str, week: int):
+        if not self.weekly_points.get(f"{week}"):
+            points = db_utils.sqlSelect(
+                table=db_utils.PLAYERS_POINTS_TABLE,
+                where={ 'player_id': self.player_id, 'week': week, 'league_id': league_id },
+                output="dict")
+            self.weekly_points = { f"{week}": points[0].get("points", None) }
+        return self.weekly_points[f"{week}"]
+
     @classmethod
     def convertListOfIDs(cls, playerIds: str | list[int]):
         # make sure we have a list
@@ -43,6 +55,10 @@ class Player():
             playerIds = eval(playerIds)
         return [cls(pId) for pId in playerIds]
 
+    # @staticmethod
+    # def getPointsByWeekForList(listPlayerIds: list)
+
 if __name__ == "__main__":
-    testPlayer = Player(3992)
+    testPlayer = Player(4943)
     print(testPlayer.full_name)
+    print(testPlayer.getPointsByWeek(config.SMACKERS_LEAGUE_ID_2026, 8))

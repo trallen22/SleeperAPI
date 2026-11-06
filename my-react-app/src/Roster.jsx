@@ -54,13 +54,18 @@ function Roster() {
   return (
     <main>
       <h1>Roster ID: {league.roster_id}</h1>
-      <h2>starters: {league.starters}</h2>
+      <h2>starters:</h2>
       <ul>
         {league.starters.map((player, index) => (
             <li key={index}>{player}</li>
         ))}
       </ul>
-      <h2>bench: {league.bench}</h2>
+      <h2>bench:</h2>
+      <ul>
+        {league.bench.map((player, index) => (
+            <li key={index}>{player}</li>
+        ))}
+      </ul>
       <h2>taxi: {league.taxi}</h2>
     </main>
   );
