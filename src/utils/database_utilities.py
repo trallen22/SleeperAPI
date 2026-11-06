@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 
 # database connection variables
@@ -22,13 +23,19 @@ BENCH_POINTS_DB_HEADER = "bench_{}_points"
 # debug flag
 DB_UTILS_DEBUG = 1
 
+# setup logger
+logger = logging.getLogger(__name__)
+DB_UTILS_DEBUG and logger.setLevel(logging.DEBUG)
+
 # we'll try to open a connection 
-def getSqliteConnection():
+def getSqliteConnection(curDatabase: str=DATABASE):
     try: 
-        return sqlite3.connect(DATABASE) 
+        return sqlite3.connect(curDatabase) 
     except Exception as e:
-        print(f"ERROR: failed to connect to database")
-        print(f'error: {e}')
+        # print(f"ERROR: failed to connect to database")
+        # print(f'error: {e}')
+        logger.critical(f"failed to connect to database '{curDatabase}'")
+        logger.error(e)
         exit(1)
 
 def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
@@ -57,14 +64,18 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         tupleStr = tupleStr[:-2]
         tupleStr += ")"
         sqlStr = f"INSERT INTO {table} VALUES {tupleStr};"
-        DB_UTILS_DEBUG and print(f"insert statement: {sqlStr}")
-        DB_UTILS_DEBUG and print(f"insert values: {curTuple}")
+        # DB_UTILS_DEBUG and print(f"insert statement: {sqlStr}")
+        # DB_UTILS_DEBUG and print(f"insert values: {curTuple}")
+        logger.debug(f"insert statement: {sqlStr}")
+        logger.debug(f"insert values: {curTuple}")
         curCursor.execute(sqlStr, curTuple)
         connection.commit()
     except Exception as e:
         connection.rollback()
-        print(f"failed insert '{tupleStr}' into '{table}'")
-        print(f"ERROR: {e}")
+        # print(f"failed insert '{tupleStr}' into '{table}'")
+        # print(f"ERROR: {e}")
+        logger.critical(f"failed insert '{tupleStr}' into '{table}'")
+        logger.error(e)
         return 2
     finally:
         # cleanup
@@ -109,7 +120,8 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
         whereStr = whereStr[:-5] # remove ' AND ' from where
     # running the sql statement
     sqlStr = f"SELECT {columnStr} FROM {table}{joinStr}{whereStr};"
-    DB_UTILS_DEBUG and print(f"sql statement: {sqlStr}")
+    # DB_UTILS_DEBUG and print(f"sql statement: {sqlStr}")
+    logger.debug(f"sql statement: {sqlStr}")
     try:
         curCursor.execute(sqlStr)
         connection.commit()
@@ -120,8 +132,10 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
             queryResults = curCursor.fetchall()
     except Exception as e:
         connection.rollback()
-        print(f"failed table: {table}")
-        print(f"ERROR: {e}")
+        # print(f"failed table: {table}")
+        # print(f"ERROR: {e}")
+        logger.critical(f"failed table: {table}")
+        logger.error(e)
         queryResults = []
     # cleanup
     curCursor.close()
@@ -152,8 +166,10 @@ def sqlDelete(table: str, where: dict=None) -> int:
         connection.commit()
     except Exception as e:
         connection.rollback()
-        print(f"failed table: {table}")
-        print(f"ERROR: {e}")
+        # print(f"failed table: {table}")
+        # print(f"ERROR: {e}")
+        logger.critical(f"failed table: {table}")
+        logger.error(e)
         return 1
     # cleanup
     curCursor.close()

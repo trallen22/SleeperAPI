@@ -1,6 +1,9 @@
+import logging
 from src.models.sleeper_api import SleeperApi
 from src.utils import database_utilities as db_utils
 from src import config
+
+
 
 class League():
     NUM_STARTERS = 10
@@ -70,16 +73,17 @@ class League():
             self.league_users = SleeperApi.apiGetUsersByLeagueId(self.league_id)
         return self.league_users
 
-    def getMatchupsByWeek(self, week: int) -> list[dict]:
-        if self.matchups_by_week.get(week) is None:
+    def getMatchupsByWeek(self, curWeek: int) -> list[dict]:
+        if self.matchups_by_week.get(curWeek) is None:
             # TODO: Nood to make sure the matchup format stays consistent
-            matchupsSQLquery = db_utils.sqlSelect(db_utils.MATCHUPS_TABLE, where={ "league_id": self.league_id, "week": week }, output="dict")
+            matchupsSQLquery = db_utils.sqlSelect(db_utils.MATCHUPS_TABLE, where={ "league_id": self.league_id, "week": curWeek }, output="dict")
             if len(matchupsSQLquery) == 0: # we didn't find any in the db
-                print(f"Couldn't find matchups for league '{self.league_id}' week '{week}' into table {db_utils.MATCHUPS_TABLE}")
+                print(f"Couldn't find matchups for league '{self.league_id}' week '{curWeek}' in table {db_utils.MATCHUPS_TABLE}")
+                self.matchups_by_week[curWeek] = SleeperApi.apiGetMatchupsByWeekByLeagueId(leagueId=self.league_id, week=curWeek)
             else:
-                print(f"found matchups for league '{self.league_id}' week '{week}' in db!")
-                self.matchups_by_week[week] = matchupsSQLquery
-        return self.matchups_by_week.get(week)
+                print(f"found matchups for league '{self.league_id}' week '{curWeek}' in db!")
+                self.matchups_by_week[curWeek] = matchupsSQLquery
+        return self.matchups_by_week.get(curWeek)
 
     def insertRostersToDBbyWeek(self, week: int) -> int:
         if not self.matchups_by_week:
