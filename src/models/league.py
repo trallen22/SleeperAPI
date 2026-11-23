@@ -4,7 +4,6 @@ from src.utils import database_utilities as db_utils
 from src import config
 
 
-
 class League():
     NUM_STARTERS = 10
     NUM_BENCH = 25

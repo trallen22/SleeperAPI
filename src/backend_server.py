@@ -40,14 +40,22 @@ async def get_matchup_roster(league_id: int, week: int, roster_id: int):
             break
 
     # TODO: could probably improve this logic
+    print(f"starters: {curMatchup.get('starters')}")
     players = Player.convertListOfIDs(curMatchup.get("starters"))
     for p in players:
         print(p.full_name)
         p.getPointsByWeek(league_id=league_id, week=week)
+    print(f"bench: {curMatchup.get('bench')}")
     bench_players = Player.convertListOfIDs(curMatchup.get("bench"))
     for b in bench_players:
         print(b.full_name)
         b.getPointsByWeek(league_id=league_id, week=week)
+    print(f"reserve: {curMatchup.get('reserve')}")
+    reserve = Player.convertListOfIDs(curMatchup.get("reserve"))
+    for r in reserve:
+        print(r.full_name)
+        r.getPointsByWeek(league_id=league_id, week=week)
+    print(f"taxi: {curMatchup.get('taxi')}")
     taxi_players = Player.convertListOfIDs(curMatchup.get("taxi"))
     for t in taxi_players:
         print(t.full_name)
@@ -56,6 +64,7 @@ async def get_matchup_roster(league_id: int, week: int, roster_id: int):
     return {
         "starters": [(p.full_name, p.weekly_points.get(f"{week}")) for p in players],
         "bench": [(b.full_name, b.weekly_points.get(f"{week}")) for b in bench_players],
+        "reserve": [(r.full_name, r.weekly_points.get(f"{week}")) for r in reserve],
         "taxi": [(t.full_name, t.weekly_points.get(f"{week}")) for t in taxi_players]
     }
 

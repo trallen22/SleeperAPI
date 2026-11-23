@@ -74,7 +74,7 @@ def sqlInsert(table: str, curTuple: tuple[str,str,str]) -> int:
         connection.rollback()
         # print(f"failed insert '{tupleStr}' into '{table}'")
         # print(f"ERROR: {e}")
-        logger.critical(f"failed insert '{tupleStr}' into '{table}'")
+        logger.critical(f"failed insert '{tupleStr}' into '{table}' with values '{curTuple}'")
         logger.error(e)
         return 2
     finally:
@@ -158,7 +158,8 @@ def sqlDelete(table: str, where: dict=None) -> int:
     if where:
         whereStr = " WHERE "
         for key in list(where.keys()):
-            whereStr += f"{key}='{where[key]}'"
+            whereStr += f"{key}='{where[key]}' AND "
+        whereStr = whereStr[:-5] # remove ' AND ' from where
     # running the sql statement
     sqlStr = f"DELETE FROM {table}{whereStr};"
     try:
@@ -170,6 +171,7 @@ def sqlDelete(table: str, where: dict=None) -> int:
         # print(f"ERROR: {e}")
         logger.critical(f"failed table: {table}")
         logger.error(e)
+        logger.error(f"failed cmd: '{sqlStr}'")
         return 1
     # cleanup
     curCursor.close()

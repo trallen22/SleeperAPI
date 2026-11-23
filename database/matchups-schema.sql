@@ -6,7 +6,7 @@ create table matchups (
     roster_id       VARCHAR NOT NULL,
     league_id       VARCHAR NOT NULL,
     week            INTEGER,
-    total_points    REAL,
+    total_points    REAL, -- might be better to remove this
     starters        TEXT,
     bench           TEXT,
     reserve         TEXT,

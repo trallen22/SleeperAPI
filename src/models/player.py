@@ -45,7 +45,12 @@ class Player():
                 table=db_utils.PLAYERS_POINTS_TABLE,
                 where={ 'player_id': self.player_id, 'week': week, 'league_id': league_id },
                 output="dict")
-            self.weekly_points = { f"{week}": points[0].get("points", None) }
+            print(f"POINTS: ")
+            try:
+                self.weekly_points = { f"{week}": points[0].get("points", None) }
+            except IndexError:
+                print(f"ERROR: no points found for week='{week}' and player='{self.player_id}' (name='{self.full_name}')")
+                self.weekly_points = { f"{week}": "NA" }
         return self.weekly_points[f"{week}"]
 
     @classmethod
@@ -55,10 +60,23 @@ class Player():
             playerIds = eval(playerIds)
         return [cls(pId) for pId in playerIds]
 
+    @staticmethod
+    def getPlayerIdFromName(player_name: str):
+        playerId = None
+        for p in playerInfoDict:
+            if playerInfoDict[p].get("full_name") == player_name:
+                playerId = p
+                break
+        if playerId is None:
+            print(f"unable to find player id for '{player_name}'")
+        return playerId
+
     # @staticmethod
     # def getPointsByWeekForList(listPlayerIds: list)
 
 if __name__ == "__main__":
     testPlayer = Player(4943)
     print(testPlayer.full_name)
-    print(testPlayer.getPointsByWeek(config.SMACKERS_LEAGUE_ID_2026, 8))
+    # print(testPlayer.getPointsByWeek(config.SMACKERS_LEAGUE_ID_2026, 8))
+    print(Player.getPlayerIdFromName(testPlayer.full_name))
+    print(Player.getPlayerIdFromName("Marvin Mims"))
