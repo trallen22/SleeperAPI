@@ -31,6 +31,7 @@ async def get_matchup_info(league_id: int, week: int=7, matchup_id: int=1):
 
 @app.get("/api/{league_id}/matchups/{roster_id}")
 async def get_matchup_roster(league_id: int, week: int, roster_id: int):
+    # TODO: could probably move this to helper function
     print(f"week: {week}\t roster_id: {roster_id}")
     leagueMatchups = League.getSpecificLeagueById(leagueId=league_id).getMatchupsByWeek(week)
     curMatchup = None

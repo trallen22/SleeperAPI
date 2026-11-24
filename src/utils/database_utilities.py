@@ -117,12 +117,17 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
     if where:
         whereStr = " WHERE "
         for key in list(where.keys()):
-            whereStr += f"{key}='{where[key]}' AND "
+            if isinstance(where[key], list):
+                whereStr += f"{key} IN {tuple(where[key])}"
+            else:
+                whereStr += f"{key}='{where[key]}'"
+            whereStr += " AND "
         whereStr = whereStr[:-5] # remove ' AND ' from where
     # running the sql statement
     sqlStr = f"SELECT {columnStr} FROM {table}{joinStr}{whereStr};"
     # DB_UTILS_DEBUG and print(f"sql statement: {sqlStr}")
     logger.debug(f"sql statement: {sqlStr}")
+    print(f"sql statement: {sqlStr}")
     try:
         curCursor.execute(sqlStr)
         connection.commit()
