@@ -22,6 +22,15 @@ def get_args():
     args, unknown = parser.parse_known_args()
     return vars(args) 
 
+def get_player_id_list(group: list[str]) -> list[str]:
+    cur_id_list = []
+    for p in group:
+        if p[:3] == "ID:": # some players have the same name so use ID
+            cur_id_list.append(p[3:])
+        else:
+            cur_id_list.append(Player.getPlayerIdFromName(p))
+    return cur_id_list
+
 ##############################
 # Main Execution begins here 
 ##############################
@@ -35,52 +44,62 @@ execute = argDict["EXECUTE"]
 cur_league_id = config.SMACKERS_LEAGUE_ID_2026
 smacker_league = League.getSpecificLeagueById(cur_league_id)
 
-for m in smacker_league.getMatchupsByWeek(week):
+cur_matchup_id = None
+for m in smacker_league.getMatchupsByWeek(week, roster_id=cur_roster_id):
     # pprint.pprint(m)
+    # print(f"roster_id: {m.get('roster_id')}")
+    # print(f"cur roster id: {cur_roster_id}")
     if int(m.get("roster_id")) == int(cur_roster_id):
+        pprint.pprint(m)
         cur_matchup_id = m["matchup_id"]
         break
 
+if cur_matchup_id is None:
+    print(f"ERROR: no matchup ID found for league='{smacker_league.league_id}' week='{week}' roster='{cur_roster_id}'")
+    exit(1)
+
 starters = [
-    "J.J. McCarthy",
-    "Omarion Hampton",
-    "Devin Singletary",
-    "Zay Flowers",
-    "Tee Higgins",
-    "Antonio Williams",
-    "Brock Bowers",
-    "Tony Pollard",
-    "Tyler Allgeier",
-    "Tank Dell",
+    "Caleb Williams",
+    "Rachaad White",
+    "J'Mari Taylor",
+    "Jordan Addison",
+    "Wan'Dale Robinson",
+    "Malik Washington",
+    "Dallas Goedert",
+    "Sam LaPorta",
+    "ID:6794", # "Justin Jefferson",
+    "Trevor Lawrence",
+    "KC Concepcion",
     
 ]
 bench = [
-    "Stetson Bennett",
-    "Dillon Gabriel",
-    "Haynes King",
-    "Jalon Daniels",
-    "Jameis Winston",
-    "Tua Tagovailoa",
-    "Malik Willis",
-    "Andrei Iosivas",
-    "Ja'Kobi Lane",
-    "Ted Hurst",
-    "Marquise Brown",
-    "Rashod Bateman",
-    "Marvin Mims",
-    "Jalin Hyatt",
-    "Eli Raridon",
-    "Tommy Tremble",
-    "Cade Otton",
+    "Drew Allar",
+    "Quinn Ewers",
+    "Anthony Richardson",
+    "Cooper Rush",
+    "Drew Lock",
+    "Davis Mills",
+    "Breece Hall",
+    "Nicholas Singleton",
+    "Kendre Miller",
+    "Devin Neal",
+    "Pierre Strong",
+    "Brandon Aiyuk",
+    "Mack Hollins",
+    "Rashid Shaheed",
+    "Luther Burden",
+    "Colby Parkinson",
+    "AJ Barner",
 ]
 reserve = [
-    "Jeremiyah Love",
-    "Alec Pierce"
+    "Michael Pittman",
 ]
 taxi_squad = [
-    "Pat Bryant",
-    "Kyle Williams",
-    "Jaylin Lane"
+    "RJ Harvey",
+    "Jalen Royals",
+    "Jackson Hawes",
+    
+    "Brenen Thompson"
 ]
 
 if execute:
@@ -89,6 +108,10 @@ if execute:
         where={ "roster_id": cur_roster_id, "week": week }
     )
 
+print(str(get_player_id_list(starters)))
+print(str(get_player_id_list(bench)))
+print(str(get_player_id_list(reserve)))
+print(str(get_player_id_list(taxi_squad)))
 
 if execute:
     db_utils.sqlInsert(
@@ -99,9 +122,9 @@ if execute:
             cur_league_id,
             week,
             0, # TODO: could maybe get rid of total_points
-            str([Player.getPlayerIdFromName(p) for p in starters]),
-            str([Player.getPlayerIdFromName(b) for b in bench]),
-            str([Player.getPlayerIdFromName(r) for r in reserve]),
-            str([Player.getPlayerIdFromName(t) for t in taxi_squad])
+            str(get_player_id_list(starters)),
+            str(get_player_id_list(bench)),
+            str(get_player_id_list(reserve)),
+            str(get_player_id_list(taxi_squad))
         )
     )

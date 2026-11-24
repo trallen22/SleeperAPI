@@ -2,6 +2,7 @@ import logging
 from src.models.sleeper_api import SleeperApi
 from src.utils import database_utilities as db_utils
 from src import config
+import pprint
 
 
 class League():
@@ -72,10 +73,13 @@ class League():
             self.league_users = SleeperApi.apiGetUsersByLeagueId(self.league_id)
         return self.league_users
 
-    def getMatchupsByWeek(self, curWeek: int) -> list[dict]:
+    def getMatchupsByWeek(self, curWeek: int, roster_id: int=None) -> list[dict]:
         if self.matchups_by_week.get(curWeek) is None:
             # TODO: Nood to make sure the matchup format stays consistent
-            matchupsSQLquery = db_utils.sqlSelect(db_utils.MATCHUPS_TABLE, where={ "league_id": self.league_id, "week": curWeek }, output="dict")
+            where_dict = { "league_id": self.league_id, "week": curWeek }
+            if roster_id is not None:
+                where_dict["roster_id"] = roster_id
+            matchupsSQLquery = db_utils.sqlSelect(db_utils.MATCHUPS_TABLE, where=where_dict, output="dict")
             if len(matchupsSQLquery) == 0: # we didn't find any in the db
                 print(f"Couldn't find matchups for league '{self.league_id}' week '{curWeek}' in table {db_utils.MATCHUPS_TABLE}")
                 self.matchups_by_week[curWeek] = SleeperApi.apiGetMatchupsByWeekByLeagueId(leagueId=self.league_id, week=curWeek)
@@ -109,6 +113,21 @@ class League():
             print(len(pointsList))
             # db_utils.sqlInsert(db_utils.ROSTERS_TABLE, )
 
+    def getRosterIDsByUserID(self):
+        id_map = {}
+        allRosters = db_utils.sqlSelect(db_utils.LEAGUE_ROSTERS_TABLE, where={"league_id": self.league_id}, output="dict")
+        print(f"allRosters: {allRosters}")
+        if len(allRosters) == 0: # not loaded into league roster table yet
+            allRosters = self.getCurRosters()
+            for r in allRosters:
+                # print(f"roster_id: {r["roster_id"]}")
+                # print(f"owner_id: {r["owner_id"]}")
+                id_map[r["owner_id"]] = r["roster_id"]
+                db_utils.sqlInsert(db_utils.LEAGUE_ROSTERS_TABLE, (self.league_id, r["roster_id"], r["owner_id"]))
+        else:
+            id_map = {r['user_id']: r['roster_id'] for r in allRosters}
+        return id_map
+
     @staticmethod
     def convertLeagueObjToTuple(leagueObj) -> tuple:
         # NOTE: make sure this lines up with schema !!
@@ -141,7 +160,8 @@ if __name__ == "__main__":
     TEST_WEEK = 7
     
     testLeague = League.getSpecificLeagueById(LEAGUE_ID)
-    print(f"all: {testLeague.getMatchupsByWeek(TEST_WEEK)}")
+    # print(f"all: {testLeague.getMatchupsByWeek(TEST_WEEK)}")
     # for m in testLeague.getMatchupsByWeek(TEST_WEEK):
     #     print(m)
     # testLeague.insertRostersToDBbyWeek(1)
+    pprint.pprint(testLeague.getRosterIDsByUserID())

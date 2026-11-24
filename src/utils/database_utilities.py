@@ -90,6 +90,7 @@ def sqlSelect(table: str, select: list[str]=None, join: list[str]=None, where: d
         select - list, column names to select from \\
         join - list, list of join statements \\
         where - dict, key=value\\
+        output - str, default bare tuple or "dict"\\
     returns: a list of tuples representing the query results
     """
     connection = getSqliteConnection()

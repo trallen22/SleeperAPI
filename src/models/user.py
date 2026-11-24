@@ -26,16 +26,6 @@ class User():
         listLeagues = SleeperApi.apiGetAllLeaguesForUserId(userId=self.user_id, season=season, sport=sport)
         return listLeagues
 
-    # def _apiGetUser(self) -> dict:
-    #     identifier = ""
-    #     if self.username:
-    #         identifier = self.username
-    #     elif self.user_id:
-    #         identifier = self.user_id
-    #     return sleeper_api._callApi(f"v1/user/{identifier}")
-
-    # def _apiGetAllLeaguesForUserId(self) -> list[dict]:
-    #     return sleeper_api._callApi(f"v1/user/{self.user_id}/leagues/{self.SPORT}/{self.SEASON}") 
 
 if __name__ == "__main__":
     USERNAME = "tallen21"

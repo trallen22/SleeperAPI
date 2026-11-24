@@ -79,4 +79,4 @@ if __name__ == "__main__":
     print(testPlayer.full_name)
     # print(testPlayer.getPointsByWeek(config.SMACKERS_LEAGUE_ID_2026, 8))
     print(Player.getPlayerIdFromName(testPlayer.full_name))
-    print(Player.getPlayerIdFromName("Marvin Mims"))
+    print(Player.getPlayerIdFromName("Pierre Strong"))
