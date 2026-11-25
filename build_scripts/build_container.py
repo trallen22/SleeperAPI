@@ -21,4 +21,11 @@ except Exception as e:
 
 IMAGE_TAG = f"fantasy-{component}"
 if client:
-    client.images.build(path=component, tag=IMAGE_TAG)
+    _, build_logs = client.images.build(path=component, tag=IMAGE_TAG)
+    for chunk in build_logs:
+        if 'stream' in chunk:
+            print(chunk['stream'].strip())
+        elif 'error' in chunk:
+            print(f"Error: {chunk['error']}")
+else:
+    print("ERROR: no client found")

@@ -1,23 +1,19 @@
 # use base image
-FROM python:3.12-slim-bookworm
+FROM python:3.15-slim
 
 # set up working directory 
-WORKDIR /app
+WORKDIR /backend
 
-# # TODO: need to look into minimizing this image
-# # install packages
-# RUN apt-get update && \
-#     apt-get install -y libpq-dev gcc curl
+# copy project files
+COPY src build_scripts/backend/requirements.txt ./src/
 
-# # copy project files
-# COPY requirements.txt .
-
-# # install dependencies
-# RUN pip install --no-cache-dir -r requirements.txt
-# RUN rm -rf /var/lib/apt/lists/*
+# install dependencies
+RUN pip install --no-cache-dir -r src/requirements.txt
 
 # # expose the port; mostly for documentation purposes
 # EXPOSE 5000
 
 # # command to run
 # CMD [ "python", "/app/src/backend_server.py" ]
+# CMD [ "bin/sh", "-c", ]
+CMD [ "uvicorn", "src.backend_server:app", "--host", "0.0.0.0", "--reload", "--port", "8000" ]
