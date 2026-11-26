@@ -2,7 +2,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./build_scripts/backend/Dockerfile
+      dockerfile: ./backend/Dockerfile
     deploy:
       resources:
         limits:
@@ -12,11 +12,11 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./sleeper_fantasy.db:/backend/data/sleeper_fantasy.db
+      - ./backend/data/sleeper_fantasy.db:/backend/data/sleeper_fantasy.db
   frontend:
     build:
       context: .
-      dockerfile: ./build_scripts/frontend/Dockerfile
+      dockerfile: ./frontend/Dockerfile
     deploy:
       resources:
         limits:
