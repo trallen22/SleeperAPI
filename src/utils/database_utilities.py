@@ -3,7 +3,9 @@ import sqlite3
 
 # database connection variables
 # TODO: need a way to not have to comment this
-DATABASE = "sleeper_fantasy.db" # this should be relative to the top level
+DOCKER_DB_PATH = "/backend/data"
+DATABASE_NAME = "sleeper_fantasy.db" # this should be relative to the top level
+DATABASE = f"{DOCKER_DB_PATH}/{DATABASE_NAME}"
 DEFAULT_VALUE = "Null"
 # table names
 PLAYERS_TABLE = "players"
@@ -13,6 +15,7 @@ USERS_TABLE = "users"
 ROSTERS_TABLE = "rosters"
 MATCHUPS_TABLE = "matchups"
 PLAYERS_POINTS_TABLE = "players_points"
+# TODO: might be able to delete this with improved schema
 # rosters variables
 STARTERS_DB_HEADER = "starter_{}"
 STARTERS_POINTS_DB_HEADER = "starter_{}_points"
@@ -32,8 +35,8 @@ def getSqliteConnection(curDatabase: str=DATABASE):
     try: 
         return sqlite3.connect(curDatabase) 
     except Exception as e:
-        # print(f"ERROR: failed to connect to database")
-        # print(f'error: {e}')
+        print(f"ERROR: failed to connect to database")
+        print(f'error: {e}')
         logger.critical(f"failed to connect to database '{curDatabase}'")
         logger.error(e)
         exit(1)

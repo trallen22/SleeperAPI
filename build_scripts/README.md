@@ -2,8 +2,17 @@
 
 NOTE: run from root of project
 
+## full stack commands
 start:
-`docker compose -f build_scripts/compose.yaml up`
+`docker compose -f compose.yaml up`
 
 stop:
-`docker compose -f build_scripts/compose.yaml down`
+`docker compose -f compose.yaml down`
+
+## individual component commands
+start container:
+`docker compose up -d <service>`
+
+run container interactively:
+`docker run -it --rm --init --volume <src>:<dest> <container name>`
+

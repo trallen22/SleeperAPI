@@ -7,7 +7,7 @@ function RosterScorecard({ title, players }) {
       <h1>{title}:</h1>
       <ul>
         {players.map(([player, points], index) => (
-            <li key={index}>{player} {Number(points).toFixed(2)}</li>
+          <li key={index}>{player} {Number(points).toFixed(2)}</li>
         ))}
       </ul>
     </>

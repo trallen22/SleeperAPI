@@ -1,3 +1,8 @@
+"""
+NOTE: writing weekly points must be done before any weekly rosters to
+      ensure that the api gets called for League.getMatchupsByWeek()
+"""
+
 import argparse
 from src.models.league import League
 from src.models.roster import Roster
@@ -15,8 +20,12 @@ def get_args():
     parser = argparse.ArgumentParser(description='generates a Trading Post')
     # adding each argument to the parser 
     # TODO: actually add this
-    parser.add_argument('-d', '--DEBUG', action='store_true', help='log debug messages to LOGFILE')
-    parser.add_argument('-e', '--EXECUTE', action='store_true', help="execute and insert to database") 
+    parser.add_argument('-d', '--debug', action='store_true', help='log debug messages to LOGFILE')
+    parser.add_argument('-e', '--execute', action='store_true', help="execute and insert to database")
+    parser.add_argument('-w', '--week', required=True, help="week to use")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-p', '--points', action='store_true', help="write weekly points")
+    group.add_argument('-r', '--roster', action='store_true', help="write weekly roster")
 
     args, unknown = parser.parse_known_args()
     return vars(args) 
@@ -26,6 +35,7 @@ def write_weekly_points(cur_week: int, cur_league_id: str, execute: bool) -> int
     smackers_league = League.getSpecificLeagueById(cur_league_id)
 
     for matchup in smackers_league.getMatchupsByWeek(cur_week):
+        pprint.pprint(matchup)
         for p in matchup['players_points']:
             print(f"player: {p}\tpoints: {matchup['players_points'][p]}")
             if execute:
@@ -98,9 +108,14 @@ def write_weekly_rosters(cur_week: int, cur_league_id: str, execute: bool=False)
 if __name__ == "__main__":
     argDict = get_args()
     print(argDict)
-    execute: bool = argDict["EXECUTE"]
+    execute: bool = argDict["execute"]
+    write_points = argDict["points"]
+    write_cur_roster = argDict["roster"]
 
-    curWeek = config.CUR_WEEK
+    curWeek = argDict["week"]
     curLeague = config.SMACKERS_LEAGUE_ID_2026
 
-    write_weekly_rosters(cur_week=curWeek, cur_league_id=curLeague, execute=execute)
+    if write_points:
+        write_weekly_points(cur_week=curWeek, cur_league_id=curLeague, execute=execute)
+    elif write_cur_roster:
+        write_weekly_rosters(cur_week=curWeek, cur_league_id=curLeague, execute=execute)
